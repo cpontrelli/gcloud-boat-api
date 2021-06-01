@@ -109,7 +109,7 @@ const get_loads = async function (req){
 }
 
 const update_load = function (id, volume, carrier, content){
-    const key = datastore.key([BOAT, parseInt(id,10)]);
+    const key = datastore.key([LOAD, parseInt(id,10)]);
     const load = {"volume": volume, "carrier": carrier || null, "content": content};
     return datastore.save({"key":key, "data":load});
 }
@@ -157,7 +157,6 @@ exports.update_boat = update_boat;
 exports.delete_boat = delete_boat;
 exports.remove_deleted_boat_from_loads = remove_deleted_boat_from_loads;
 exports.get_boat_load = get_boat_load;
-exports.get_boat_load_detailed = get_boat_load_detailed;
 exports.format_boat = format_boat;
 exports.post_load = post_load;
 exports.get_loads = get_loads;

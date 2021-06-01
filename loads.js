@@ -58,7 +58,7 @@ module.exports = function(){
     });
 
     router.put('/:id', function(req, res){
-        if(req.body.volume && req.body.carrier){
+        if(req.body.volume && req.body.content){
             const key = datastore.key([model_functions.LOAD, parseInt(req.params.id,10)]);
             datastore.get(key, async (err, entity) => {
                 if(!entity) {
