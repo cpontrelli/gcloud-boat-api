@@ -7,6 +7,17 @@ module.exports = function(){
 
     const datastore = new Datastore();
 
+    function check_accept_header(req, res, next) {
+        const accepts = req.accepts(['application/json', 'text/html']);
+        if(!accepts) {
+            res.status(406).send(JSON.parse('{"Error": "This endpoint can only return JSON or HTML"}'));
+        } else {
+            next();
+        }
+    }
+
+    router.use(check_accept_header);
+
     /* ------------- Begin Controller Functions ------------- */
 
     router.get('/', async function(req, res){
@@ -46,6 +57,56 @@ module.exports = function(){
         }
     });
 
+    router.put('/:id', function(req, res){
+        if(req.body.volume && req.body.carrier){
+            const key = datastore.key([model_functions.LOAD, parseInt(req.params.id,10)]);
+            datastore.get(key, async (err, entity) => {
+                if(!entity) {
+                    res.status(404).send(JSON.parse('{"Error": "No load with this load_id exists"}'));
+                } else {
+                    await model_functions.update_load(req.params.id, req.body.volume, entity.carrier || null, req.body.content)
+                    datastore.get(key, async (err, entity) => {
+                        if(!entity) {
+                            console.log(`Error getting updated load: ${key.id}`);
+                        } else {
+                            load = await model_functions.format_load(entity, req);
+                            res.status(200).send(load);
+                        }
+                    });
+                }
+            });
+        } else {
+            res.status(400).send(JSON.parse('{"Error": "The request object is missing at least one of the required attributes"}'));
+        }
+    });
+
+    router.patch('/:id', function(req, res){
+        if(req.body.volume && req.body.content) {
+            res.status(400).send(JSON.parse('{"Error": "The request object contains both volume and content. Please use the PUT /loads/:load_id endpoint."}'));
+        } else if(req.body.volume || req.body.content) {
+            const key = datastore.key([model_functions.LOAD, parseInt(req.params.id,10)]);
+            datastore.get(key, async (err, entity) => {
+                if(!entity) {
+                    res.status(404).send(JSON.parse('{"Error": "No load with this load_id exists"}'));
+                } else {
+                    await model_functions.update_load(req.params.id,
+                                                      req.body.volume  || entity.volume,
+                                                      entity.carrier   || null, 
+                                                      req.body.content || entity.content)
+                    datastore.get(key, async (err, entity) => {
+                        if(!entity) {
+                            console.log(`Error getting patched load: ${key.id}`);
+                        } else {
+                            load = await model_functions.format_load(entity, req);
+                            res.status(200).send(load);
+                        }
+                    });
+                }
+            });
+        } else {
+            res.status(400).send(JSON.parse('{"Error": "The request object is missing at least one of the required attributes"}'));
+        }
+    });
 
     router.delete('/:id', async function(req, res){
         const key = datastore.key([model_functions.LOAD, parseInt(req.params.id,10)]);

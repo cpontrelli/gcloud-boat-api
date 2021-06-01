@@ -32,7 +32,7 @@ const get_boats = async function (req){
     return results;
 }
 
-const put_boat = function (id, name, type, length){
+const update_boat = function (id, name, type, length){
     const key = datastore.key([BOAT, parseInt(id,10)]);
     const boat = {"name": name, "type": type, "length": length};
     return datastore.save({"key":key, "data":boat});
@@ -108,6 +108,12 @@ const get_loads = async function (req){
     return results;
 }
 
+const update_load = function (id, volume, carrier, content){
+    const key = datastore.key([BOAT, parseInt(id,10)]);
+    const load = {"volume": volume, "carrier": carrier || null, "content": content};
+    return datastore.save({"key":key, "data":load});
+}
+
 const delete_load = function (id){
     const key = datastore.key([LOAD, parseInt(id,10)]);
     return datastore.delete(key);
@@ -147,7 +153,7 @@ exports.BOAT = BOAT;
 exports.LOAD = LOAD;
 exports.post_boat = post_boat;
 exports.get_boats = get_boats;
-exports.put_boat = put_boat;
+exports.update_boat = update_boat;
 exports.delete_boat = delete_boat;
 exports.remove_deleted_boat_from_loads = remove_deleted_boat_from_loads;
 exports.get_boat_load = get_boat_load;
@@ -155,6 +161,7 @@ exports.get_boat_load_detailed = get_boat_load_detailed;
 exports.format_boat = format_boat;
 exports.post_load = post_load;
 exports.get_loads = get_loads;
+exports.update_load = update_load;
 exports.delete_load = delete_load;
 exports.update_load_carrier = update_load_carrier;
 exports.get_load_carrier = get_load_carrier;

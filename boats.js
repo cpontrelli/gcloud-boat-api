@@ -7,9 +7,21 @@ module.exports = function(){
 
     const datastore = new Datastore();
 
+    function check_accept_header(req, res, next) {
+        const accepts = req.accepts(['application/json', 'text/html']);
+        if(!accepts) {
+            res.status(406).send(JSON.parse('{"Error": "This endpoint can only return JSON or HTML"}'));
+        } else {
+            next();
+        }
+    }
+
+    router.use(check_accept_header);
+
     /* ------------- Begin Controller Functions ------------- */
 
     router.get('/', async function(req, res){
+        
         const boats = await model_functions.get_boats(req)
         boats.results.forEach(async (boat) => {
             boat.self = `${req.protocol}://${req.get("host")}${req.baseUrl}/${boat.id}`
@@ -53,10 +65,38 @@ module.exports = function(){
                 if(!entity) {
                     res.status(404).send(JSON.parse('{"Error": "No boat with this boat_id exists"}'));
                 } else {
-                    await model_functions.put_boat(req.params.id, req.body.name, req.body.type, req.body.length)
+                    await model_functions.update_boat(req.params.id, req.body.name, req.body.type, req.body.length)
                     datastore.get(key, async (err, entity) => {
                         if(!entity) {
-                            console.log(`Error getting patched boat: ${key.id}`);
+                            console.log(`Error getting updated boat: ${key.id}`);
+                        } else {
+                            boat = await model_functions.format_boat(entity, req);
+                            res.status(200).send(boat);
+                        }
+                    });
+                }
+            });
+        } else {
+            res.status(400).send(JSON.parse('{"Error": "The request object is missing at least one of the required attributes"}'));
+        }
+    });
+
+    router.patch('/:id', function(req, res){
+        if(req.body.name && req.body.type && req.body.length) {
+            res.status(400).send(JSON.parse('{"Error": "The request object contains name, type, and length. Please use the PUT /boats/:boat_id endpoint."}'));
+        } else if(req.body.name || req.body.type || req.body.length) {
+            const key = datastore.key([model_functions.BOAT, parseInt(req.params.id,10)]);
+            datastore.get(key, async (err, entity) => {
+                if(!entity) {
+                    res.status(404).send(JSON.parse('{"Error": "No boat with this boat_id exists"}'));
+                } else {
+                    await model_functions.update_boat(req.params.id,
+                                                      req.body.name   || entity.name,
+                                                      req.body.type   || entity.type, 
+                                                      req.body.length || entity.length)
+                    datastore.get(key, async (err, entity) => {
+                        if(!entity) {
+                            console.log(`Error getting updated boat: ${key.id}`);
                         } else {
                             boat = await model_functions.format_boat(entity, req);
                             res.status(200).send(boat);
