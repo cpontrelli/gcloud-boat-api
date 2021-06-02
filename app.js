@@ -14,6 +14,7 @@ app.set('view engine', 'handlebars');
 
 app.use('/boats', require('./boats.js'));
 app.use('/loads', require('./loads.js'));
+app.use('/users', require('./users.js'));
 app.use('/', require('./login.js'));
 
 app.enable('trust proxy');

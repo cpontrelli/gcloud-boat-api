@@ -10,6 +10,12 @@ module.exports = function(){
     const Auth0Strategy = require('passport-auth0');
     const session = require('express-session');
 
+    const {Datastore} = require('@google-cloud/datastore');
+
+    const datastore = new Datastore();
+
+    const USER = "User";
+
     // config express-session
     const sess = {
         secret: 'CHANGE THIS TO A RANDOM SECRET',
@@ -42,10 +48,10 @@ module.exports = function(){
                 process.env.AUTH0_CALLBACK_URL || 'http://localhost:8080/callback'
         },
         function (accessToken, refreshToken, extraParams, profile, done) {
-        // accessToken is the token to call Auth0 API (not needed in the most cases)
-        // extraParams.id_token has the JSON Web Token
-        passport.session.JWT = extraParams.id_token;
-        // profile has all the information from the user
+            // accessToken is the token to call Auth0 API (not needed in the most cases)
+            // extraParams.id_token has the JSON Web Token
+            passport.session.JWT = extraParams.id_token;
+            // profile has all the information from the user
         return done(null, profile);
         }
     );
@@ -97,11 +103,11 @@ module.exports = function(){
     
         var returnTo = req.protocol + '://' + req.get('host');
         var logoutURL = new url.URL(
-        util.format('https://%s/v2/logout', process.env.AUTH0_DOMAIN)
+            util.format('https://%s/v2/logout', process.env.AUTH0_DOMAIN)
         );
         var searchString = querystring.stringify({
-        client_id: process.env.AUTH0_CLIENT_ID,
-        returnTo: returnTo
+            client_id: process.env.AUTH0_CLIENT_ID,
+            returnTo: returnTo
         });
         logoutURL.search = searchString;
         res.redirect(logoutURL);
@@ -110,8 +116,19 @@ module.exports = function(){
     /* GET user profile. */
     router.get('/userinfo', secured, function (req, res, next) {
         let context = {};
+        context.sub = req.user.id;
         context.name = req.user.displayName;
         context.JWT = passport.session.JWT;
+
+        const key = datastore.key([USER, context.sub]);
+        datastore.get(key, async (err, entity) => {
+            if(!entity) {
+                const key = datastore.key([USER, context.sub]);
+                const new_user = { "email": context.name };
+                await datastore.save({ "key": key, "data": new_user });
+            }
+        });
+
         res.render('userInfo', context);
     });
   
