@@ -11,15 +11,15 @@ const fromDatastore = function (item){
 }
 
 /* ------------- Boat Model Functions ------------- */
-const post_boat = async function (name, type, length){
+const post_boat = async function (name, type, length, owner){
     const key = datastore.key(BOAT);
-    const new_boat = {"name": name, "type": type, "length": length};
+    const new_boat = {"name": name, "type": type, "length": length, "owner": owner};
     await datastore.save({ "key": key, "data": new_boat });
     return key;
 }
 
 const get_boats = async function (req){
-    let q = datastore.createQuery(BOAT).limit(3);
+    let q = datastore.createQuery(BOAT).filter('owner', req.user.sub).limit(3);
     const results = {};
     if(Object.keys(req.query).includes("cursor")) {
         q = q.start(req.query.cursor);

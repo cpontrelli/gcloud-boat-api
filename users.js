@@ -24,5 +24,25 @@ module.exports = function(){
         res.status(200).json(users);
     });
 
+    router.post('/', function (req, res){
+        res.set('Accept', 'GET');
+        res.status(405).end();
+    });
+
+    router.put('/', function (req, res){
+        res.set('Accept', 'GET');
+        res.status(405).end();
+    });
+
+    router.patch('/', function (req, res){
+        res.set('Accept', 'GET');
+        res.status(405).end();
+    });
+
+    router.delete('/', function (req, res){
+        res.set('Accept', 'GET');
+        res.status(405).end();
+    });
+
     return router;
 }();

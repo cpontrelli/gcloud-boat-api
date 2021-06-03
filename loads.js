@@ -120,6 +120,26 @@ module.exports = function(){
         });
     });
 
+    router.delete('/', function (req, res){
+        res.set('Accept', 'GET, POST');
+        res.status(405).end();
+    });
+
+    router.put('/', function (req, res){
+        res.set('Accept', 'GET, POST');
+        res.status(405).end();
+    });
+
+    router.patch('/', function (req, res){
+        res.set('Accept', 'GET, POST');
+        res.status(405).end();
+    });
+
+    router.post('/:id', function (req, res){
+        res.set('Accept', 'GET, PUT, PATCH, DELETE');
+        res.status(405).end();
+    });
+
     /* ------------- End Controller Functions ------------- */
 
     return router;
