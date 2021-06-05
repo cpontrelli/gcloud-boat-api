@@ -24,11 +24,11 @@ module.exports = function(){
           cache: true,
           rateLimit: true,
           jwksRequestsPerMinute: 5,
-          jwksUri: `https://cs-493-hw-7.us.auth0.com/.well-known/jwks.json`
+          jwksUri: `https://cs-493-final-project.us.auth0.com/.well-known/jwks.json`
         }),
       
         // Validate the audience and the issuer.
-        issuer: `https://cs-493-hw-7.us.auth0.com/`,
+        issuer: `https://cs-493-final-project.us.auth0.com/`,
         algorithms: ['RS256']
       });
 
@@ -94,7 +94,7 @@ module.exports = function(){
                 } else if (entity.owner != req.user.sub) {
                     res.status(403).send(JSON.parse('{"Error": "This boat is owned by another user"}'));
                 } else {
-                    await model_functions.update_boat(req.params.id, req.body.name, req.body.type, req.body.length)
+                    await model_functions.update_boat(req.params.id, req.body.name, req.body.type, req.body.length, entity.owner)
                     datastore.get(key, async (err, entity) => {
                         if(!entity) {
                             console.log(`Error getting updated boat: ${key.id}`);
@@ -124,7 +124,8 @@ module.exports = function(){
                     await model_functions.update_boat(req.params.id,
                                                       req.body.name   || entity.name,
                                                       req.body.type   || entity.type, 
-                                                      req.body.length || entity.length)
+                                                      req.body.length || entity.length,
+                                                      entity.owner)
                     datastore.get(key, async (err, entity) => {
                         if(!entity) {
                             console.log(`Error getting updated boat: ${key.id}`);

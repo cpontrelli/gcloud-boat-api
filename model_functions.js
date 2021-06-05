@@ -4,6 +4,7 @@ const datastore = new Datastore();
 
 const BOAT = "Boat";
 const LOAD = "Load";
+const NUM_PER_PAGE = 5;
 
 const fromDatastore = function (item){
     item.id = item[Datastore.KEY].id;
@@ -19,7 +20,7 @@ const post_boat = async function (name, type, length, owner){
 }
 
 const get_boats = async function (req){
-    let q = datastore.createQuery(BOAT).filter('owner', req.user.sub).limit(3);
+    let q = datastore.createQuery(BOAT).filter('owner', req.user.sub).limit(NUM_PER_PAGE);
     const results = {};
     if(Object.keys(req.query).includes("cursor")) {
         q = q.start(req.query.cursor);
@@ -32,9 +33,9 @@ const get_boats = async function (req){
     return results;
 }
 
-const update_boat = function (id, name, type, length){
+const update_boat = function (id, name, type, length, owner){
     const key = datastore.key([BOAT, parseInt(id,10)]);
-    const boat = {"name": name, "type": type, "length": length};
+    const boat = {"name": name, "type": type, "length": length, "owner": owner};
     return datastore.save({"key":key, "data":boat});
 }
 
@@ -95,7 +96,7 @@ const post_load = async function (volume, carrier, content){
 }
 
 const get_loads = async function (req){
-    let q = datastore.createQuery(LOAD).limit(3);
+    let q = datastore.createQuery(LOAD).limit(NUM_PER_PAGE);
     const results = {};
     if(Object.keys(req.query).includes("cursor")) {
         q = q.start(req.query.cursor);
