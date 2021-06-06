@@ -11,9 +11,9 @@ module.exports = function(){
     const datastore = new Datastore();
 
     const check_accept_header= function(req, res, next) {
-        const accepts = req.accepts(['application/json', 'text/html']);
+        const accepts = req.accepts(['application/json']);
         if(!accepts) {
-            res.status(406).send(JSON.parse('{"Error": "This endpoint can only return JSON or HTML"}'));
+            res.status(406).send(JSON.parse('{"Error": "This endpoint can only return JSON"}'));
         } else {
             next();
         }
@@ -48,10 +48,10 @@ module.exports = function(){
 
     router.get('/', async function(req, res){
         const boats = await model_functions.get_boats(req)
-        boats.results.forEach(async (boat) => {
+        await Promise.all(boats.results.map(async (boat) => {
             boat.self = `${req.protocol}://${req.get("host")}${req.baseUrl}/${boat.id}`
             boat.load = await model_functions.get_boat_load(boat.id, req);
-        });
+        }));
         res.status(200).json(boats);
     });
 

@@ -8,9 +8,9 @@ module.exports = function(){
     const datastore = new Datastore();
 
     function check_accept_header(req, res, next) {
-        const accepts = req.accepts(['application/json', 'text/html']);
+        const accepts = req.accepts(['application/json']);
         if(!accepts) {
-            res.status(406).send(JSON.parse('{"Error": "This endpoint can only return JSON or HTML"}'));
+            res.status(406).send(JSON.parse('{"Error": "This endpoint can only return JSON"}'));
         } else {
             next();
         }
