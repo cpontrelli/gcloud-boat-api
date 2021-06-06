@@ -1,0 +1,3313 @@
+{
+	"info": {
+		"_postman_id": "831ac404-c738-46d6-b008-bf3f2b513c21",
+		"name": "Final Project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Users",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/users",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Boat JWT1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//Set boat id environment variable from response\r",
+							"pm.environment.set(\"boat1_jwt1\", pm.response.json().id);\r",
+							"\r",
+							"pm.test(\"201 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"    pm.expect(pm.response.json()[\"name\"]).to.equal(\"Sea Witch\");\r",
+							"    pm.expect(pm.response.json()[\"type\"]).to.equal(\"Catamaran\");\r",
+							"    pm.expect(pm.response.json()[\"length\"]).to.equal(28);\r",
+							"    pm.expect(pm.response.json()[\"loads\"]).to.deep.equal([]);\r",
+							"    const self_url = pm.environment.get(\"url\") + \"/boats/\" + pm.response.json()[\"id\"];\r",
+							"    pm.expect(pm.response.json()[\"self\"]).to.equal(self_url);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Sea Witch\",\r\n    \"type\": \"Catamaran\",\r\n    \"length\": 28\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/boats",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Boat with missing attributes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"400 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(400);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Boat\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/boats",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Boat with invalid accept header",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"406 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(406);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Boat\",\r\n    \"type\": \"Catamaran\",\r\n    \"length\": 28\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/boats",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Boat invalid JWT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"401 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(401);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "sajldksjaldksjladkjslkdajlskdjalskdj",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Sea Witch\",\r\n    \"type\": \"Catamaran\",\r\n    \"length\": 28\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/boats",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Boat missing JWT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"401 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(401);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Sea Witch\",\r\n    \"type\": \"Catamaran\",\r\n    \"length\": 28\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/boats",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Boat JWT1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function() {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"name\"]).to.equal(\"Sea Witch\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.equal(\"Catamaran\");",
+							"    pm.expect(pm.response.json()[\"length\"]).to.equal(28);",
+							"    pm.expect(pm.response.json()[\"loads\"]).to.deep.equal([]);",
+							"    const self_url = pm.environment.get(\"url\") + \"/boats/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.equal(self_url);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/boats/{{boat1_jwt1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"{{boat1_jwt1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Boat with JWT2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"403 status code\", function() {",
+							"    pm.expect(pm.response.code).to.equal(403);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/boats/{{boat1_jwt1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"{{boat1_jwt1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get a Boat with invalid id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function() {",
+							"    pm.expect(pm.response.code).to.equal(404);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/boats/1",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Patch Boat JWT1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"    pm.expect(pm.response.json()[\"name\"]).to.equal(\"Sea Wizard\");\r",
+							"    pm.expect(pm.response.json()[\"type\"]).to.equal(\"Catamaran\");\r",
+							"    pm.expect(pm.response.json()[\"length\"]).to.equal(28);\r",
+							"    pm.expect(pm.response.json()[\"loads\"]).to.deep.equal([]);\r",
+							"    const self_url = pm.environment.get(\"url\") + \"/boats/\" + pm.response.json()[\"id\"];\r",
+							"    pm.expect(pm.response.json()[\"self\"]).to.equal(self_url);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Sea Wizard\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/boats/{{boat1_jwt1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"{{boat1_jwt1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Patch Boat with JWT2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"403 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(403);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Sea Wizard\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/boats/{{boat1_jwt1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"{{boat1_jwt1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Put Boat with all attributes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"400 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(400);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Sea Witch\",\r\n    \"type\": \"Catamaran\",\r\n    \"length\": 28\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/boats/{{boat1_jwt1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"{{boat1_jwt1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Patch Boat with invalid id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(404);\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Sea Wizard\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/boats/1",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Put Boat with invalid id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(404);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Sea Witch\",\r\n    \"type\": \"Catamaran\",\r\n    \"length\": 28\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/boats/1",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Put Boat with JWT2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"403 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(403);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Sea Witch\",\r\n    \"type\": \"Catamaran\",\r\n    \"length\": 28\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/boats/{{boat1_jwt1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"{{boat1_jwt1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Put Boat JWT1 Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"    pm.expect(pm.response.json()[\"name\"]).to.equal(\"Sea Witch\");\r",
+							"    pm.expect(pm.response.json()[\"type\"]).to.equal(\"Catamaran\");\r",
+							"    pm.expect(pm.response.json()[\"length\"]).to.equal(28);\r",
+							"    pm.expect(pm.response.json()[\"loads\"]).to.deep.equal([]);\r",
+							"    const self_url = pm.environment.get(\"url\") + \"/boats/\" + pm.response.json()[\"id\"];\r",
+							"    pm.expect(pm.response.json()[\"self\"]).to.equal(self_url);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Sea Witch\",\r\n    \"type\": \"Catamaran\",\r\n    \"length\": 28\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/boats/{{boat1_jwt1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"{{boat1_jwt1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Put Boat with missing attributes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"400 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(400);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Sea Witch\",\r\n    \"type\": \"Catamaran\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/boats/{{boat1_jwt1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"{{boat1_jwt1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Boat with JWT2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"403 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(403);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/boats/{{boat1_jwt1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"{{boat1_jwt1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Boat2 JWT1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//Set boat id environment variable from response\r",
+							"pm.environment.set(\"boat2_jwt1\", pm.response.json().id);\r",
+							"\r",
+							"pm.test(\"201 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(201);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Boat2\",\r\n    \"type\": \"Catamaran\",\r\n    \"length\": 28\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/boats",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Boat3 JWT1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//Set boat id environment variable from response\r",
+							"pm.environment.set(\"boat3_jwt1\", pm.response.json().id);\r",
+							"\r",
+							"pm.test(\"201 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(201);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Boat3\",\r\n    \"type\": \"Catamaran\",\r\n    \"length\": 28\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/boats",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Boat4 JWT1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//Set boat id environment variable from response\r",
+							"pm.environment.set(\"boat4_jwt1\", pm.response.json().id);\r",
+							"\r",
+							"pm.test(\"201 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(201);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Boat4\",\r\n    \"type\": \"Catamaran\",\r\n    \"length\": 28\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/boats",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Boat5 JWT1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//Set boat id environment variable from response\r",
+							"pm.environment.set(\"boat5_jwt1\", pm.response.json().id);\r",
+							"\r",
+							"pm.test(\"201 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(201);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Boat5\",\r\n    \"type\": \"Catamaran\",\r\n    \"length\": 28\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/boats",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Boat6 JWT1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//Set boat id environment variable from response\r",
+							"pm.environment.set(\"boat6_jwt1\", pm.response.json().id);\r",
+							"\r",
+							"pm.test(\"201 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(201);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Boat6\",\r\n    \"type\": \"Catamaran\",\r\n    \"length\": 28\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/boats",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Boat Collection",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function() {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/boats/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Load",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//Set appropriate environment variable for load id\r",
+							"pm.environment.set(\"load1\", pm.response.json().id);\r",
+							"\r",
+							"pm.test(\"201 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"    pm.expect(pm.response.json()[\"volume\"]).to.equal(5);\r",
+							"    pm.expect(pm.response.json()[\"carrier\"]).to.be.null;\r",
+							"    pm.expect(pm.response.json()[\"content\"]).to.equal(\"LEGO Blocks\");\r",
+							"    const self_url = pm.environment.get(\"url\") + \"/loads/\" + pm.response.json()[\"id\"];\r",
+							"    pm.expect(pm.response.json()[\"self\"]).to.equal(self_url);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"volume\": 5,\r\n    \"content\": \"LEGO Blocks\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/loads",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"loads"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Load with invalid accept header",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"406 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(406);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {
+					"accept": true
+				}
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "text/html",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"volume\": 5,\r\n    \"content\": \"LEGO Blocks\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/loads",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"loads"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Load with missing attributes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"400 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(400);\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"volume\": 5\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/loads",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"loads"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Load",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function() {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"volume\"]).to.equal(5);",
+							"    pm.expect(pm.response.json()[\"carrier\"]).to.be.null;",
+							"    pm.expect(pm.response.json()[\"content\"]).to.equal(\"LEGO Blocks\");",
+							"    const self_url = pm.environment.get(\"url\") + \"/loads/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.equal(self_url);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/loads/{{load1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"loads",
+						"{{load1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Load with invalid id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function() {",
+							"    pm.expect(pm.response.code).to.equal(404);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/loads/1",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"loads",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Load2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//Set appropriate environment variable for load id\r",
+							"pm.environment.set(\"load2\", pm.response.json().id);\r",
+							"\r",
+							"pm.test(\"201 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(201);\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"volume\": 5,\r\n    \"content\": \"Load2\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/loads",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"loads"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Load3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//Set appropriate environment variable for load id\r",
+							"pm.environment.set(\"load3\", pm.response.json().id);\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"volume\": 5,\r\n    \"content\": \"load3\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/loads",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"loads"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Load4",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//Set appropriate environment variable for load id\r",
+							"pm.environment.set(\"load4\", pm.response.json().id);\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"volume\": 5,\r\n    \"content\": \"Load4\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/loads",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"loads"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Load5",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//Set appropriate environment variable for load id\r",
+							"pm.environment.set(\"load5\", pm.response.json().id);\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"volume\": 5,\r\n    \"content\": \"Load5\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/loads",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"loads"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Load6",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//Set appropriate environment variable for load id\r",
+							"pm.environment.set(\"load6\", pm.response.json().id);\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"volume\": 5,\r\n    \"content\": \"load6\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/loads",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"loads"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Load Collection",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function() {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/loads/",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"loads",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Boat1 without Load",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function() {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"name\"]).to.equal(\"Sea Witch\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.equal(\"Catamaran\");",
+							"    pm.expect(pm.response.json()[\"length\"]).to.equal(28);",
+							"    pm.expect(pm.response.json()[\"loads\"]).to.deep.equal([]);",
+							"    const self_url = pm.environment.get(\"url\") + \"/boats/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.equal(self_url);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/boats/{{boat1_jwt1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"{{boat1_jwt1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Load1 without Boat",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function() {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"volume\"]).to.equal(5);",
+							"    pm.expect(pm.response.json()[\"carrier\"]).to.be.null;",
+							"    pm.expect(pm.response.json()[\"content\"]).to.equal(\"LEGO Blocks\");",
+							"    const self_url = pm.environment.get(\"url\") + \"/loads/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.equal(self_url);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/loads/{{load1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"loads",
+						"{{load1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Load1 to Boat1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/boats/{{boat1_jwt1}}/loads/{{load1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"{{boat1_jwt1}}",
+						"loads",
+						"{{load1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Load1 to Boat2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"403 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(403);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/boats/{{boat2_jwt1}}/loads/{{load1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"{{boat2_jwt1}}",
+						"loads",
+						"{{load1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add invalid Load to Boat1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/boats/{{boat2_jwt1}}/loads/1",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"{{boat2_jwt1}}",
+						"loads",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Load2 to invalid Boat",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/boats/1/loads/{{load2}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"1",
+						"loads",
+						"{{load2}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Load1 to Boat1 with invalid auth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"403 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(403);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/boats/{{boat1_jwt1}}/loads/{{load1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"{{boat1_jwt1}}",
+						"loads",
+						"{{load1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Boat1 with Load",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function() {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/boats/{{boat1_jwt1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"{{boat1_jwt1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Load1 with Boat",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function() {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/loads/{{load1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"loads",
+						"{{load1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remove Load1 from Boat2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/boats/{{boat1_jwt2}}/loads/{{load1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"{{boat1_jwt2}}",
+						"loads",
+						"{{load1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remove Load1 from Boat1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/boats/{{boat1_jwt1}}/loads/{{load1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"{{boat1_jwt1}}",
+						"loads",
+						"{{load1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remove Load1 from Boat1 with invalid auth",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"403 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(403);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/boats/{{boat1_jwt1}}/loads/{{load1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"{{boat1_jwt1}}",
+						"loads",
+						"{{load1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remove Load1 from invalid boat",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/boats/1/loads/{{load1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"1",
+						"loads",
+						"{{load1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remove invalid Load from Boat1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/boats/{{boat1_jwt1}}/loads/1",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"{{boat1_jwt1}}",
+						"loads",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Boat1 with removed Load",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function() {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"name\"]).to.equal(\"Sea Witch\");",
+							"    pm.expect(pm.response.json()[\"type\"]).to.equal(\"Catamaran\");",
+							"    pm.expect(pm.response.json()[\"length\"]).to.equal(28);",
+							"    pm.expect(pm.response.json()[\"loads\"]).to.deep.equal([]);",
+							"    const self_url = pm.environment.get(\"url\") + \"/boats/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.equal(self_url);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/boats/{{boat1_jwt1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"{{boat1_jwt1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Load1 with removed Boat",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function() {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"volume\"]).to.equal(5);",
+							"    pm.expect(pm.response.json()[\"carrier\"]).to.be.null;",
+							"    pm.expect(pm.response.json()[\"content\"]).to.equal(\"LEGO Blocks\");",
+							"    const self_url = pm.environment.get(\"url\") + \"/loads/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.equal(self_url);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/loads/{{load1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"loads",
+						"{{load1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Load1 to Boat1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/boats/{{boat1_jwt1}}/loads/{{load1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"{{boat1_jwt1}}",
+						"loads",
+						"{{load1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Load1 with Boat",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function() {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/loads/{{load1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"loads",
+						"{{load1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Boat JWT1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function() {",
+							"    pm.expect(pm.response.code).to.equal(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/boats/{{boat1_jwt1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"{{boat1_jwt1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Load1 with removed Boat",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function() {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"pm.test(\"content is valid\", function () {",
+							"    pm.expect(pm.response.json()[\"volume\"]).to.equal(5);",
+							"    pm.expect(pm.response.json()[\"carrier\"]).to.be.null;",
+							"    pm.expect(pm.response.json()[\"content\"]).to.equal(\"LEGO Blocks\");",
+							"    const self_url = pm.environment.get(\"url\") + \"/loads/\" + pm.response.json()[\"id\"];",
+							"    pm.expect(pm.response.json()[\"self\"]).to.equal(self_url);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/loads/{{load1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"loads",
+						"{{load1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Patch Load",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"    pm.expect(pm.response.json()[\"volume\"]).to.equal(6);\r",
+							"    pm.expect(pm.response.json()[\"carrier\"]).to.be.null;\r",
+							"    pm.expect(pm.response.json()[\"content\"]).to.equal(\"LEGO Blocks\");\r",
+							"    const self_url = pm.environment.get(\"url\") + \"/loads/\" + pm.response.json()[\"id\"];\r",
+							"    pm.expect(pm.response.json()[\"self\"]).to.equal(self_url);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"volume\": 6\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/loads/{{load1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"loads",
+						"{{load1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Patch Load with all attributes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"400 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(400);\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"volume\": 5,\r\n    \"content\": \"LEGO Blocks\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/loads/{{load1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"loads",
+						"{{load1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Patch Load with invalid id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(404);\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"volume\": 5\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/loads/1",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"loads",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Put Load",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"content is valid\", function () {\r",
+							"    pm.expect(pm.response.json()[\"volume\"]).to.equal(5);\r",
+							"    pm.expect(pm.response.json()[\"carrier\"]).to.be.null;\r",
+							"    pm.expect(pm.response.json()[\"content\"]).to.equal(\"LEGO Blocks\");\r",
+							"    const self_url = pm.environment.get(\"url\") + \"/loads/\" + pm.response.json()[\"id\"];\r",
+							"    pm.expect(pm.response.json()[\"self\"]).to.equal(self_url);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"volume\": 5,\r\n    \"content\": \"LEGO Blocks\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/loads/{{load1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"loads",
+						"{{load1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Put Load with missing attributes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"400 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(400);\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"volume\": 5\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/loads/{{load1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"loads",
+						"{{load1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Put Load with invalid id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(404);\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \r\n    \"volume\": 5,\r\n    \"content\": \"LEGO Blocks\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/loads/1",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"loads",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Load",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function() {",
+							"    pm.expect(pm.response.code).to.equal(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/loads/{{load1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"loads",
+						"{{load1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Load2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function() {",
+							"    pm.expect(pm.response.code).to.equal(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/loads/{{load2}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"loads",
+						"{{load2}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Load3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function() {",
+							"    pm.expect(pm.response.code).to.equal(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/loads/{{load3}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"loads",
+						"{{load3}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Load4",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function() {",
+							"    pm.expect(pm.response.code).to.equal(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/loads/{{load4}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"loads",
+						"{{load4}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Load5",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function() {",
+							"    pm.expect(pm.response.code).to.equal(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/loads/{{load5}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"loads",
+						"{{load5}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Load6",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function() {",
+							"    pm.expect(pm.response.code).to.equal(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/loads/{{load6}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"loads",
+						"{{load6}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Load with invalid id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function() {",
+							"    pm.expect(pm.response.code).to.equal(404);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/loads/1",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"loads",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Boat2 JWT1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function() {",
+							"    pm.expect(pm.response.code).to.equal(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/boats/{{boat2_jwt1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"{{boat2_jwt1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Boat3 JWT1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function() {",
+							"    pm.expect(pm.response.code).to.equal(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/boats/{{boat3_jwt1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"{{boat3_jwt1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Boat4 JWT1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function() {",
+							"    pm.expect(pm.response.code).to.equal(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/boats/{{boat4_jwt1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"{{boat4_jwt1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Boat5 JWT1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function() {",
+							"    pm.expect(pm.response.code).to.equal(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/boats/{{boat5_jwt1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"{{boat5_jwt1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Boat6 JWT1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"204 status code\", function() {",
+							"    pm.expect(pm.response.code).to.equal(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/boats/{{boat6_jwt1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"{{boat6_jwt1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete boat with invalid id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"404 status code\", function() {",
+							"    pm.expect(pm.response.code).to.equal(404);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/boats/1",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get from invalid endpoint",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"405 status code\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(405);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/boats/{{boat1_jwt1}}/loads/{{load1}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"boats",
+						"{{boat1_jwt1}}",
+						"loads",
+						"{{load1}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
